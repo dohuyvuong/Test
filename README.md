@@ -73,3 +73,5 @@ sequenceDiagram
     deactivate t_access_token_blacklist
     deactivate ChangePassword
 ```
+
+[![Image1](./Screenshot 2025-07-05 at 00.06.09-min.png)]

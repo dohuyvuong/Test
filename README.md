@@ -1,77 +1,88 @@
-```mermaid
-%%{init: {'theme': 'neutral', 'themeVariables': {
-  }
-}}%%
- 
-sequenceDiagram
-    actor ユーザ
-    participant Login as Màn hình đăng nhập
-    participant EmailForm as Màn hình gửi email
-    participant m_stat_user as 分析ユーザマスタ
-    participant m_company as 会社マスタ
-    participant t_access_token_blacklist as アクセストークンブラックリスト
-    participant Mailer as Mail Server
-    participant l_password_log as パスワードログ
-    participant ChangePassword as Màn hình thay đổi mật khẩu
-    participant ActiveExpired as Màn hình hết hạn
-    %% Step 1–3
-    ユーザ->>Login: Truy cập đăng nhập
-    Login-->>ユーザ: Hiển thị màn hình đăng nhập
-    ユーザ->>EmailForm: Click link 「パスワードをお忘れの場合」
-    ユーザ->>EmailForm: Nhập ログインID & click "送信"
-    activate EmailForm
-    %% Step 4: Backend xử lý
-    EmailForm->>m_stat_user: Query(Thông tin 分析ユーザマスタ từ ログインID)
-    activate m_stat_user
-    m_stat_user-->>EmailForm: Result(Thông tin 分析ユーザマスタ)
-    deactivate m_stat_user
-    alt Thông tin 分析ユーザマスタ không tồn tại
-    else Thông tin 分析ユーザマスタ tồn tại
-        EmailForm->>m_company: Query(Thông tin company từ 会社ID của 分析ユーザマスタ)
-        activate m_company
-        m_company-->>EmailForm: Result(Thông tin company)
-        deactivate m_company
-        EmailForm->>EmailForm: Sinh JWT resetToken (10 phút, theo m_company)
-        EmailForm->>t_access_token_blacklist: Lưu token và thời gian hết hạn của token
-        activate t_access_token_blacklist
-        t_access_token_blacklist-->EmailForm: Lưu thành công
-        deactivate t_access_token_blacklist
-        EmailForm->>Mailer: Gửi email chứa link đặt lại mật khẩu
-        activate Mailer
-        Mailer-->>EmailForm: Gửi mail thành công
-        deactivate Mailer
-    end
-    deactivate EmailForm
-    EmailForm-->>ユーザ: Hiển thị: "パスワード再設定のご案内を送信いたしました。メールをご確認ください。"
-    ユーザ-->>ユーザ: Nhận email chứa link reset
-    ユーザ->>ChangePassword: Click URL trong email
-    activate ChangePassword
-    ChangePassword->>t_access_token_blacklist: Query(Thông tin アクセストークンブラックリスト từ token reset)
-    activate t_access_token_blacklist
-    alt Token hợp lệ
-        ユーザ->>ChangePassword: Nhập mật khẩu mới và click 送信
-        ChangePassword->>m_stat_user: Cập nhật mật khẩu
-        activate m_stat_user
-        m_stat_user-->>ChangePassword: Cập nhật mật khẩu thành công
-        deactivate m_stat_user
-        ChangePassword->>l_password_log: Thêm lịch sử mật khẩu mới
-        activate l_password_log
-        l_password_log-->>ChangePassword: Thêm lịch sử mật khẩu thành công
-        deactivate l_password_log
-        t_access_token_blacklist->>t_access_token_blacklist: Cập nhật アクセストークンブラックリスト của 分析ユーザマスタ về hết hạn
-        t_access_token_blacklist-->>ChangePassword: Cập nhật アクセストークンブラックリスト của 分析ユーザマスタ về hết hạn thành công
-        ChangePassword->>Mailer: Gửi email thông báo đã thay đổi mật khẩu
-        activate Mailer
-        Mailer-->>ChangePassword: Gửi mail thành công
-        deactivate Mailer
-        ChangePassword-->>Login: Redirect về màn hình đăng nhập
-        Login-->>Login: Hiển thị "パスワードを再設定しました。"
-    else Token không hợp lệ
-        t_access_token_blacklist-->>ActiveExpired: Hiển thị "リンクが無効となっています。"
-        ActiveExpired-->> ユーザ: Hiển thị link "パスワード再設定のご案内を送信いたしました。メールをご確認ください。"
-    end
-    deactivate t_access_token_blacklist
-    deactivate ChangePassword
-```
+1-ログイン画面
+<div style="border: 1px solid #ccc; padding: 5px; display: inline-block; margin-bottom: 10px;">
+  <a href="./image-1753416231660.png" target="_blank">
+    <img src="./image-1753416231660.png" alt="パスワード再設定画面" />
+  </a>
+</div>
 
-![Screenshot](./Screenshot%202025-07-05%20at%2000.06.09-min.png)
+
+**画面項目説明**
+| #  | 項目名               | 属性      | 初期値   | 必須 | 入力チェック | 更新 | フォーマット | 関連データ項目     | 備考  |
+|----|------|-----------|-----------|------|--------|------|---------|------------|--------|
+| 1  | パスワードをお忘れの場合   | textlink | ー    | ー    | ー             | ー    | ー            | ー      | |
+
+| # | アクション名                         | アクションの処理概要 |
+|---|--------------------------------------|------------------------|
+|1 |パスワードをお忘れの場合 textlink clicked| 「パスワード再設定メール送信画面」へ遷移する|
+
+2-パスワード再設定メール送信画面
+<div style="border: 1px solid #ccc; padding: 5px; display: inline-block; margin-bottom: 10px;">
+  <a href="./scaled-1680-/image-1753424889771.png" target="_blank">
+    <img src="./scaled-1680-/image-1753424889771.png" alt="パスワード再設定画面" />
+  </a>
+</div>
+
+**画面項目説明**
+| #  | 項目名               | 属性      | 初期値   | 必須 | 入力チェック | 更新 | フォーマット | 関連データ項目     | 備考  |
+|----|------|-----------|-----------|------|--------|------|---------|------------|--------|
+| 1  |パスワード再設定メール送信画面    | label | ー    | ー    | ー             | ー    | ー            | ー      | |
+| 2  |*ログインID：   | label | ー    | ー    | ー             | ー    | ー            | ー||
+| 3  | ログインID  | textbox | ー    | O    | ー             | ー    | ー   | ー | プレースホルダー: ログインID |
+| 4  | 戻る  | button | ー    | ー    | ー             | ー    | ー            | ー      | |
+| 5  | 確定  | button | ー    | ー    | ー             | ー    | ー            | ー      | |
+
+
+|Item No.| アクション名                         | アクションの処理概要 |
+|---|--------------------------------------|------------------------|
+|4 | 戻るボタンクリック| ログイン画面に戻る |
+|5 | 確定ボタンクリック| **メールアドレスのバリデーションを行い、mStatUserテーブルで存在確認を実施。メールアドレスが存在する場合** <br>-  画面に処理成功のステータスを返却<br>- フロントエンドに「パスワード再設定のご案内を送信いたしました。メールをご確認ください。」を表示<br>バックエンド側で一時的なパスワード再設定用トークンを生成し、それを含むリンクを記載したメールをユーザーに送信<br>**メールアドレスが存在しない場合：**<br>-「パスワード再設定のご案内を送信いたしました。メールをご確認ください。」を表示<br>- 注意：メールアドレスが存在しない場合でも、処理成功と同様の表示を行い、情報漏洩を防止<br>**予期しないエラーが発生した場合：** 他の画面と同様にエラーステータスを返却し、警告を表示 |
+
+3-パスワード再設定画面
+  <a href="./scaled-1680-/image-1753425814177.png" target="_blank">
+    <img src="./scaled-1680-/image-1753425814177.png" alt="パスワード再設定画面" />
+  </a>
+</div>
+
+
+**画面項目説明**
+| #  | 項目名               | 属性      | 初期値   | 必須 | 入力チェック | 更新 | フォーマット | 関連データ項目     | 備考  |
+|----|------|-----------|-----------|------|--------|------|---------|------------|--------|
+| 1  | パスワード再設定画面   | label | ー    | ー    | ー             | ー    | ー            | ー      | |
+| 2  |新しいパスワード   | label | ー    | ー    | ー             | ー    | ー            | ー      | |
+| 3  |新しいパスワード  | textbox | ー    | ー    | ー    | ー    | ー  | ー      |プレースホルダー: 新しいパスワード |
+| 4  |新しいパスワードの確認   | label | ー    | ー    | ー             | ー    | ー            | ー      | |
+| 5  | 新しいパスワードの確認  | textbox | ー| ー| ー| ー    | ー  | ー      | プレースホルダー: 新しいパスワードの確認|
+| 6 |  戻る | button | ー    | ー    | ー             | ー    | ー            | ー      | |
+| 7  | 確定  | button | ー    | ー    | ー             | ー    | ー            | ー      | |
+
+
+| # | アクション名                         | アクションの処理概要 |
+|---|--------------------------------------|------------------------|
+|6 | 戻るボタンクリック| ログイン画面に戻る |
+|7 | 確定ボタンクリック|-バックエンドがトークンの有効性と有効期限切れを確認（秘密鍵検証、有効期限、ブラックリスト確認）<br/>- 有効な場合: +成功をレスポンス、フロントエンドはパスワード再設定画面を表示 <br/> 無効な場合:「リンクが無効となっています。」<br/> 「ご案内の再送信はこちらをクリックしてください。」（パスワード再設定メール送信画面に遷移、メールアドレスは再入力 |
+
+4-パスワード再設定後画面
+<div style="border: 1px solid #ccc; padding: 5px; display: inline-block; margin-bottom: 10px;">
+  <a href="./scaled-1680-/image-1753266244024.png" target="_blank">
+    <img src="./scaled-1680-/image-1753266244024.png" alt="パスワード再設定画面" />
+  </a>
+</div>
+5-パスワード再設定画面（エラー画面）
+
+<div style="border: 1px solid #ccc; padding: 5px; display: inline-block; margin-bottom: 10px;">
+  <a href="./scaled-1680-/image-1753428457279.png" target="_blank">
+    <img src="./scaled-1680-/image-1753428457279.png" alt="パスワード再設定画面" />
+  </a>
+</div>
+
+**画面項目説明**
+| #  | 項目名               | 属性      | 初期値   | 必須 | 入力チェック | 更新 | フォーマット | 関連データ項目     | 備考  |
+|----|------|-----------|-----------|------|--------|------|---------|------------|--------|
+| 1  | エラーのテキスト   | label | ー    | ー    | ー             | ー    | ー            | ー      | |
+| 2  | こちら  | textlink | ー    | ー    | ー             | ー    | ー            | ー      | |
+| 3  |ログイン画面へ戻る | button | ー    | ー    | ー             | ー    | ー            | ー      | |
+
+| # | アクション名                         | アクションの処理概要 |
+|---|--------------------------------------|------------------------|
+|1 | こちら clicked|パスワードリセットメール画面に戻り、メールアドレスの再入力を求めます|
+|2 | ログイン画面へ戻る clicked|ログイン画面へ戻る|

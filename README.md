@@ -17,8 +17,8 @@
 
 2-パスワード再設定メール送信画面
 <div style="border: 1px solid #ccc; padding: 5px; display: inline-block; margin-bottom: 10px;">
-  <a href="./scaled-1680-/image-1753424889771.png" target="_blank">
-    <img src="./scaled-1680-/image-1753424889771.png" alt="パスワード再設定画面" />
+  <a href="./image-1753424889771.png" target="_blank">
+    <img src="./image-1753424889771.png" alt="パスワード再設定画面" />
   </a>
 </div>
 
@@ -38,8 +38,8 @@
 |5 | 確定ボタンクリック| **メールアドレスのバリデーションを行い、mStatUserテーブルで存在確認を実施。メールアドレスが存在する場合** <br>-  画面に処理成功のステータスを返却<br>- フロントエンドに「パスワード再設定のご案内を送信いたしました。メールをご確認ください。」を表示<br>バックエンド側で一時的なパスワード再設定用トークンを生成し、それを含むリンクを記載したメールをユーザーに送信<br>**メールアドレスが存在しない場合：**<br>-「パスワード再設定のご案内を送信いたしました。メールをご確認ください。」を表示<br>- 注意：メールアドレスが存在しない場合でも、処理成功と同様の表示を行い、情報漏洩を防止<br>**予期しないエラーが発生した場合：** 他の画面と同様にエラーステータスを返却し、警告を表示 |
 
 3-パスワード再設定画面
-  <a href="./scaled-1680-/image-1753425814177.png" target="_blank">
-    <img src="./scaled-1680-/image-1753425814177.png" alt="パスワード再設定画面" />
+  <a href="./image-1753425814177.png" target="_blank">
+    <img src="./image-1753425814177.png" alt="パスワード再設定画面" />
   </a>
 </div>
 
@@ -63,15 +63,15 @@
 
 4-パスワード再設定後画面
 <div style="border: 1px solid #ccc; padding: 5px; display: inline-block; margin-bottom: 10px;">
-  <a href="./scaled-1680-/image-1753266244024.png" target="_blank">
-    <img src="./scaled-1680-/image-1753266244024.png" alt="パスワード再設定画面" />
+  <a href="./image-1753266244024.png" target="_blank">
+    <img src="./image-1753266244024.png" alt="パスワード再設定画面" />
   </a>
 </div>
 5-パスワード再設定画面（エラー画面）
 
 <div style="border: 1px solid #ccc; padding: 5px; display: inline-block; margin-bottom: 10px;">
-  <a href="./scaled-1680-/image-1753428457279.png" target="_blank">
-    <img src="./scaled-1680-/image-1753428457279.png" alt="パスワード再設定画面" />
+  <a href="./image-1753428457279.png" target="_blank">
+    <img src="./image-1753428457279.png" alt="パスワード再設定画面" />
   </a>
 </div>
 

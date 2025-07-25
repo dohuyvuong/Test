@@ -1,9 +1,5 @@
 1-ログイン画面
-<div style="border: 1px solid #ccc; padding: 5px; display: inline-block; margin-bottom: 10px;">
-  <a href="./image-1753416231660.png" target="_blank">
-    <img src="./image-1753416231660.png" alt="パスワード再設定画面" />
-  </a>
-</div>
+<kbd><img src="./image-1753416231660.png" alt="パスワード再設定画面" /></kbd>
 
 
 **画面項目説明**

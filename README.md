@@ -74,4 +74,4 @@ sequenceDiagram
     deactivate ChangePassword
 ```
 
-![Image1]("./Screenshot 2025-07-05 at 00.06.09-min.png" "Image1")
+![Screenshot](./Screenshot%202025-07-05%20at%2000.06.09-min.png)
